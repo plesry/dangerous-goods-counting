@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Class and Style</title>
+</head>
+<body>
+    <div id="test-1"
+         v-bind:class="classObject"
+         v-bind:style="styleObject">
+        Test 01
+    </div>
+    <div id="test-2"
+         v-bind:class="[{ active : isActive }, errorClass]">
+        Test 02
+    </div>
+
+    <!-- Vue script -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var vm1 = new Vue({
+            el: '#test-1',
+            data: {
+                isActive: true,
+                error:null
+            },
+            computed: {
+                classObject: function() {
+                    return {
+                        active: this.isActive && !this.error,
+                        'text-danger': this.error && this.error.type === 'fatal'
+                    }
+                },
+                styleObject: function() {
+                    return {
+                        color: 'red',
+                        fontSize: '13px'
+                    }
+                }
+            }
+        });
+        var vm2 = new Vue({
+            el: '#test-2',
+            data: {
+                isActive: true,
+                activeClass: 'active',
+                errorClass:  'text-danger'
+            }
+        });
+    </script>
+    
+</body>
+</html>

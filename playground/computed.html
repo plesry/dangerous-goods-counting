@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Computed</title>
+</head>
+<body>
+    <div id="example">
+        <p>Original message: "{{ message }}"</p>
+        <p>Computed reversed message: "{{ reversedMessage }}"</p>
+
+        <p>{{ now() }}</p>
+    </div>
+
+    <!-- Vue script -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+    var vm = new Vue({
+        el: '#example',
+        data: {
+            message: 'Hello'
+        },
+        // 在組件中
+        methods: {
+            now: function() {
+                return Date.now()
+            }
+        },
+        computed: {
+            // 計算屬性的 getter
+            reversedMessage: function() {
+                // this 指向 vm 實例
+                return this.message.split('').reverse().join('')
+            }
+        }
+    });
+    </script>
+</body>
+</html>
