@@ -1,6 +1,6 @@
 body {
     font-family: Helvetica Neue, Arial, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     color: #444;
 }
 
@@ -20,6 +20,26 @@ td {
 }
 
 th, td {
-    min-width: 120px;
+    min-width: 80px;
     padding: 10px 20px;
+}
+
+.button {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #4CAF50;
+    padding: 4px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
 }

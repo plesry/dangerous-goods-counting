@@ -29,8 +29,8 @@
             {{ entry[key] }}
           </td>
           <td>
-            <button @click="increment(entry)">  +  </button>
-            <button @click="decrement(entry)">  -  </button>
+            <button class="button" @click="increment(entry)">Add 1</button>
+            <button class="button" @click="decrement(entry)">Minus 1</button>
           </td>
         </tr>
       </tbody>
@@ -41,7 +41,7 @@
         <tr>
           <th>Total:</th>
           <th>{{ sum }}</th>
-          <th><button @click="reset()">Reset</button></th>
+          <th><button class="button" @click="reset()">Reset</button></th>
         </tr>
       </thead>
     </table>
