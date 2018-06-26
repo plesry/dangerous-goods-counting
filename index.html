@@ -14,6 +14,8 @@
   <script type="text/x-template" id="counting-template">
     <div>
 
+    <input placeholder="Add new count..."v-model="newCount" @keyup.enter="addCount">
+
     <table>
       <thead>
         <tr>
@@ -29,8 +31,9 @@
             {{ entry[key] }}
           </td>
           <td>
-            <button class="button" @click="increment(entry)">Add 1</button>
-            <button class="button" @click="decrement(entry)">Minus 1</button>
+            <button class="button" @click="increment(entry)">+1</button>
+            <button class="button" @click="decrement(entry)">-1</button>
+            <button class="button" @click="setActive(entry)">Active</button>
           </td>
         </tr>
       </tbody>
@@ -62,11 +65,13 @@ vm = Vue.component('counting-table', {
   template: '#counting-template',
   props: {
     data: Array,
-    columns: Array
+    columns: Array,
+    newCount: String
   },
   data: function () {
     this.reset()
     return {
+      activeId: 6  // 鉛酸電池
     }
   },
   computed: {
@@ -96,6 +101,15 @@ vm = Vue.component('counting-table', {
       if (category.count > 0) {
         category.count -= 1;
       }
+    },
+    setActive: function (category) {
+      this.activeId = category.id;
+    },
+    addCount: function () {
+      var num = Number(this.newCount)
+      console.log(num)
+      this.data[this.activeId-1].count += num
+      this.newCount = ''
     }
   }
 })
@@ -104,6 +118,7 @@ vm = Vue.component('counting-table', {
 var vm = new Vue({
   el: '#demo',
   data: {
+    countText: '',
     gridColumns: ['type', 'count'],
     gridData: [
       { id:  1, type: '刀剪', count: 1234 },
