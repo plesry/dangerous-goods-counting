@@ -13,131 +13,135 @@
   <!-- component template -->
   <script type="text/x-template" id="counting-template">
     <div>
-
-    <input placeholder="Add new count..."v-model="newCount" @keyup.enter="addCount">
-
-    <table>
-      <thead>
-        <tr>
-          <th v-for="key in columns">
-            {{ key | capitalize }}
-          </th>
-          <th>Actions</th>
+      
+      <input placeholder="Add new count..."v-model="newCount" @keyup.enter="addCount">
+      
+      <table>
+        <thead>
+          <tr>
+            <th class="control">Actions</th>
+            <th v-for="key in columns">
+              {{ key | capitalize }}
+            </th>
           </tr>
-      </thead>
-      <tbody>
-        <tr v-for="entry in data">
-          <td v-for="key in columns">
-            {{ entry[key] }}
-          </td>
-          <td>
-            <button class="button" @click="increment(entry)">+1</button>
-            <button class="button" @click="decrement(entry)">-1</button>
-            <button class="button" @click="setActive(entry)">Active</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Total:</th>
-          <th>{{ sum }}</th>
-          <th><button class="button" @click="reset()">Reset</button></th>
-        </tr>
-      </thead>
-    </table>
+        </thead>
+        <tbody>
+          <tr v-for="entry in data" >
+            
+            <td class="control">
+              <div class="row">
+                <div class="block triangle_up" @click="increment(entry)"></div>
+                <div class="block triangle_down" @click="decrement(entry)"></div>
+                <button class="block button" @click="setActive(entry)">Active</button>
+              </div>
+            </td>
+            <td v-for="key in columns">
+              {{ entry[key] }}
+            </td>
+            
+          </tr>
+        </tbody>
+      </table>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Total:</th>
+            <th>{{ sum }}</th>
+            <th><button class="button" @click="reset()">Reset</button></th>
+          </tr>
+        </thead>
+      </table>
     </div>
   </script>
-
+  
   <!-- demo root element -->
   <div id="demo">
     <counting-table
-      :data="gridData"
-      :columns="gridColumns">
-    </counting-table>
-  </div>
+    :data="gridData"
+    :columns="gridColumns">
+  </counting-table>
+</div>
 
-  <script>
+<script>
   // register the grid component
-vm = Vue.component('counting-table', {
-  template: '#counting-template',
-  props: {
-    data: Array,
-    columns: Array,
-    newCount: String
-  },
-  data: function () {
-    this.reset()
-    return {
-      activeId: 6  // 鉛酸電池
-    }
-  },
-  computed: {
-    sum: function () {
-      var x = 0;
-      this.data.forEach(function (category) {
-        x += category.count;
-      })
-      return x;
-    }
-  },
-  filters: {
-    capitalize: function (str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
-    }
-  },
-  methods: {
-    reset: function () {
-      this.data.forEach(function (category) {
-        category.count = 0;
-      })
-      console.log('Reset all categories to zero.');
+  Vue.component('counting-table', {
+    template: '#counting-template',
+    props: {
+      data: Array,
+      columns: Array,
+      newCount: String
     },
-    increment: function (category) {
-      category.count += 1;
-      console.log(category.type + ' increased by one (now ' 
-        + category.count + ').');
-    },
-    decrement: function (category) {
-      if (category.count <= 0) {
-        console.log('Error: Category is empty. Ignore decrement.')
-      } else {
-        category.count -= 1;
-        console.log(category.type + ' decreased by one (now ' 
-        + category.count + ').');
+    data: function () {
+      this.reset()
+      return {
+        activeId: 6  // 鉛酸電池
       }
     },
-    setActive: function (category) {
-      this.activeId = category.id;
-      console.log(category.type + ' is active.');
+    computed: {
+      sum: function () {
+        var x = 0;
+        this.data.forEach(function (category) {
+          x += category.count;
+        })
+        return x;
+      }
     },
-    addCount: function () {
-      var num = Number(this.newCount);
-      this.newCount = '';
-
-      if (Number.isNaN(num)) {
-        console.log('Error: Input is not a valid number.')
-      } else if (num < 0) {
-        console.log('Error: Negative value is not accepted.')
-      } else {
-        var category = this.data[this.activeId - 1];
-        category.count += num;
-        console.log(category.type + ' increased by ' + num + ' (now ' 
+    filters: {
+      capitalize: function (str) {
+        return str.charAt(0).toUpperCase() + str.slice(1)
+      }
+    },
+    methods: {
+      reset: function () {
+        this.data.forEach(function (category) {
+          category.count = 0;
+        })
+        console.log('Reset all categories to zero.');
+      },
+      increment: function (category) {
+        category.count += 1;
+        console.log(category.type + ' increased by one (now ' 
         + category.count + ').');
+      },
+      decrement: function (category) {
+        if (category.count <= 0) {
+          console.log('Error: Category is empty. Ignore decrement.')
+        } else {
+          category.count -= 1;
+          console.log(category.type + ' decreased by one (now ' 
+          + category.count + ').');
+        }
+      },
+      setActive: function (category) {
+        this.activeId = category.id;
+        console.log(category.type + ' is active.');
+      },
+      addCount: function () {
+        var num = Number(this.newCount);
+        this.newCount = '';
+        
+        if (Number.isNaN(num)) {
+          console.log('Error: Input is not a valid number.')
+        } else if (num < 0) {
+          console.log('Error: Negative value is not accepted.')
+        } else {
+          var category = this.data[this.activeId - 1];
+          category.count += num;
+          console.log(category.type + ' increased by ' + num + ' (now ' 
+          + category.count + ').');
+        }
       }
     }
-  }
-})
-
-// bootstrap the demo
-var vm = new Vue({
-  el: '#demo',
-  data: {
-    countText: '',
-    gridColumns: ['type', 'count'],
-    gridData: [
+  })
+  
+  // bootstrap the demo
+  var vm1 = new Vue({
+    el: '#demo',
+    data: {
+      countText: '',
+      gridColumns: ['type', 'count'],
+      gridData: [
       { id:  1, type: '刀剪', count: 1234 },
       { id:  2, type: '腳架', count: 1234 },
       { id:  3, type: '棍棒', count: 1234 },
@@ -150,8 +154,8 @@ var vm = new Vue({
       { id: 10, type: '煙火', count: 1234 },
       { id: 11, type: '易燃液體', count: 1234 },
       { id: 12, type: '腐蝕液體', count: 1234 }
-    ]
-  }
-})
+      ]
+    }
+  })
 </script>
 </body>
