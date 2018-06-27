@@ -93,23 +93,40 @@ vm = Vue.component('counting-table', {
       this.data.forEach(function (category) {
         category.count = 0;
       })
+      console.log('Reset all categories to zero.');
     },
     increment: function (category) {
       category.count += 1;
+      console.log(category.type + ' increased by one (now ' 
+        + category.count + ').');
     },
     decrement: function (category) {
-      if (category.count > 0) {
+      if (category.count <= 0) {
+        console.log('Error: Category is empty. Ignore decrement.')
+      } else {
         category.count -= 1;
+        console.log(category.type + ' decreased by one (now ' 
+        + category.count + ').');
       }
     },
     setActive: function (category) {
       this.activeId = category.id;
+      console.log(category.type + ' is active.');
     },
     addCount: function () {
-      var num = Number(this.newCount)
-      console.log(num)
-      this.data[this.activeId-1].count += num
-      this.newCount = ''
+      var num = Number(this.newCount);
+      this.newCount = '';
+
+      if (Number.isNaN(num)) {
+        console.log('Error: Input is not a valid number.')
+      } else if (num < 0) {
+        console.log('Error: Negative value is not accepted.')
+      } else {
+        var category = this.data[this.activeId - 1];
+        category.count += num;
+        console.log(category.type + ' increased by ' + num + ' (now ' 
+        + category.count + ').');
+      }
     }
   }
 })
