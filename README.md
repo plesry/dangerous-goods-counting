@@ -1,5 +1,5 @@
 # Dangerous Goods Counting
-This demo app helps me categorize and count all confiscated items in the Aviation Police Bureau.
+This demo app helps me categorize and count all confiscated items in the Aviation Police Bureau (航警局).
 
 ## Background
 All confiscated items (dangerous or hazardous) are categorized into 12 groups:
@@ -18,16 +18,18 @@ All confiscated items (dangerous or hazardous) are categorized into 12 groups:
 
 ## Implemented
 * Counting
-  * Input a count to a group; the count should be positive
+  * Add new value to a group's count by clicking on the group
   * Increment/Decrement the count of a group
   * Reset all counts
 * Summary
   * Total of all counts
 * Save/Load
   * All counts are saved into HTML5 local storage
+* UI
+  * Now using BootStrap CSS
 
 ## Planning 
 
-* Double-click a group to add count to it
 * Tabs to switch between Terminals 1 and 2
+* File organization (separate HTML, CSS, and JS)
 * Better UI
