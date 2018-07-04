@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>危安物品清點</title>
-  
+
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet"
-  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-  crossorigin="anonymous">
+  <link rel="stylesheet"href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
   <link rel="stylesheet" href="./my-css-elements.css">
 </head>
-<body>  
+
+<body>
   <!-- Vue.js -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  
+
   <!-- template -->
   <div class="container" id="dgc-app">
-    
+
     <table class="table table-hover">
       <thead class="thead-dark">
         <tr>
@@ -29,51 +29,46 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-        v-for="item in items" :key="item.id"
-        v-bind:class="{ 'table-success': item == activeItem }"
-        @click="setActive(item)">
-        <td>
-          <span v-if="item != activeItem"> {{ item.type }} </span>
-          <span
-          v-if="item == activeItem"
-          style="font-weight: bold"> {{ item.type }} </span>
-        </td>
-        <td>
-          <span> {{ item.count }} </span>
-          
-          <span v-if="item == activeItem">
-            + <input type="number" v-model="addCount" 
-            @keyup.enter="addNewCount(item)"
-            @keyup.esc="cancelNewCount(item)">
-          </span>
-        </td>
-        <td>
-          <div class="my-row">
-            <div class="my-block triangle_up" @click="increment(item)"></div>
-            <div class="my-block triangle_down" @click="decrement(item)"></div>
-          </td>  
+        <tr v-for="item in items" :key="item.id" v-bind:class="{ 'table-success': item == activeItem }" @click="setActive(item)">
+          <td>
+            <span v-if="item != activeItem"> {{ item.type }} </span>
+            <span v-if="item == activeItem" style="font-weight: bold"> {{ item.type }} </span>
+          </td>
+          <td>
+            <span> {{ item.count }} </span>
+
+            <span v-if="item == activeItem">
+              +
+              <input type="number" v-model="addCount" @keyup.enter="addNewCount(item)" @keyup.esc="cancelNewCount(item)">
+            </span>
+          </td>
+          <td>
+            <div class="my-row">
+              <div class="my-block triangle_up" @click="increment(item)"></div>
+              <div class="my-block triangle_down" @click="decrement(item)"></div>
+          </td>
         </tr>
       </tbody>
       <thead class="thead-dark">
         <tr>
           <th>Total:</th>
           <th>{{ total }}</th>
-          <th><button type="button" class="btn btn-primary"
-            @click="reset()">Reset</button></th>
-          </tr>
-        </thead>
-      </table>
-      
-      <table class="table">
-        
-      </table>
+          <th>
+            <button type="button" class="btn btn-primary" @click="reset()">Reset</button>
+          </th>
+        </tr>
+      </thead>
+    </table>
+
+    <table class="table">
+
+    </table>
     </div>
-    
+
     <script>
       // localStorage
       var STORAGE_KEY = 'dgcount-vuejs';
-      
+
       var itemStorage = {
         fetch: function () {
           var items = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -87,7 +82,7 @@
           localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
         }
       };
-      
+
       // app Vue instance
       var app = new Vue({
         // app initial state
@@ -96,7 +91,7 @@
           addCount: 0,
           activeItem: null
         },
-        
+
         // watch items change for localStorage persistence
         watch: {
           items: {
@@ -106,19 +101,20 @@
             deep: true
           }
         },
-        
+
         // computed properties
         // http://vuejs.org/guide/computed.html
         computed: {
           total: function () {
             return this.items.reduce(
-            function (total, item) { return total + item.count; }, 0);
+              function (total, item) {
+                return total + item.count;
+              }, 0);
           }
         },
-        
-        filters: {
-        },
-        
+
+        filters: {},
+
         // methods that implement data logic.
         // note there's no DOM manipulation here at all.
         methods: {
@@ -130,16 +126,16 @@
           },
           increment: function (item) {
             item.count += 1;
-            console.log(item.type + ' increased by one (now ' 
-            + item.count + ').');
+            console.log(item.type + ' increased by one (now ' +
+              item.count + ').');
           },
           decrement: function (item) {
             if (item.count <= 0) {
               console.log('Error: item is empty. Ignore decrement.')
             } else {
               item.count -= 1;
-              console.log(item.type + ' decreased by one (now ' 
-              + item.count + ').');
+              console.log(item.type + ' decreased by one (now ' +
+                item.count + ').');
             }
           },
           setActive: function (item) {
@@ -148,17 +144,20 @@
           },
           addNewCount: function (item) {
             var num = Number(this.addCount);
-            
-            if (Number.isNaN(num)) {
-              console.log('Error: Input is not a valid number.')
+
+            // check if the input number is a positive integer 
+            // or the group's count become negative
+            if (!Number.isInteger(num)) {
+              console.log('Error: Input is not an integer.')
             } else if (item.count + num < 0) {
               console.log('Error: Negative count is not accepted.')
-            } else {
+            } else if (num !== 0) {
               item.count += num;
-              console.log(item.type + ' increased by ' + num + ' (now ' 
-              + item.count + ').');
+              console.log(item.type + ' increased by ' + num + ' (now ' +
+                item.count + ').');
             }
-            
+
+            // reset
             this.addCount = 0;
             this.activeItem = null;
           },
@@ -168,42 +167,86 @@
           }
         }
       })
-      
+
       // initialize data in first start  
       function dataSetup() {
         if (!app.items.length) {
-          app.items = [
-          { id:  1, type: '刀剪', count: 0 },
-          { id:  2, type: '腳架', count: 0 },
-          { id:  3, type: '棍棒', count: 0 },
-          { id:  4, type: '工具', count: 0 },
-          { id:  5, type: '打火機', count: 0 },
-          { id:  6, type: '鉛酸電池', count: 0 },
-          { id:  7, type: '槍刀玩具', count: 0 },
-          { id:  8, type: '噴罐', count: 0 },
-          { id:  9, type: '防狼噴霧', count: 0 },
-          { id: 10, type: '煙火', count: 0 },
-          { id: 11, type: '易燃液體', count: 0 },
-          { id: 12, type: '腐蝕液體', count: 0 }
+          app.items = [{
+              id: 1,
+              type: '刀剪',
+              count: 0
+            },
+            {
+              id: 2,
+              type: '腳架',
+              count: 0
+            },
+            {
+              id: 3,
+              type: '棍棒',
+              count: 0
+            },
+            {
+              id: 4,
+              type: '工具',
+              count: 0
+            },
+            {
+              id: 5,
+              type: '打火機',
+              count: 0
+            },
+            {
+              id: 6,
+              type: '鉛酸電池',
+              count: 0
+            },
+            {
+              id: 7,
+              type: '槍刀玩具',
+              count: 0
+            },
+            {
+              id: 8,
+              type: '噴罐',
+              count: 0
+            },
+            {
+              id: 9,
+              type: '防狼噴霧',
+              count: 0
+            },
+            {
+              id: 10,
+              type: '煙火',
+              count: 0
+            },
+            {
+              id: 11,
+              type: '易燃液體',
+              count: 0
+            },
+            {
+              id: 12,
+              type: '腐蝕液體',
+              count: 0
+            }
           ];
           console.log('First running. Initialize data.')
         }
       }
-      
+
       dataSetup()
       app.$mount('#dgc-app')
     </script>
-    
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" 
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
-    
-  </body>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"></script>
+
+</body>
