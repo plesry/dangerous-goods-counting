@@ -19,12 +19,6 @@
   
   <!-- template -->
   <div class="container" id="dgc-app">
-    <label for="newCountForOneGroup">Add a new count:</label>
-    <div class="form-group">
-      <input type="number" class="form-control"
-      placeholder="0"
-      v-model="addCount" @keyup.enter="addCountToActive">
-    </div>
     
     <table class="table table-hover">
       <thead class="thead-dark">
@@ -37,7 +31,8 @@
       <tbody>
         <tr
         v-for="item in items" :key="item.id"
-        v-bind:class="{ 'table-success': item == activeItem }">
+        v-bind:class="{ 'table-success': item == activeItem }"
+        @click="setActive(item)">
         <td>
           <span v-if="item != activeItem"> {{ item.type }} </span>
           <span
@@ -45,18 +40,18 @@
           style="font-weight: bold"> {{ item.type }} </span>
         </td>
         <td>
-          <span v-if="item != activeItem"> {{ item.count }} </span>
-          <span
-          v-if="item == activeItem"
-          style="font-weight: bold"> {{ item.count }} </span>
+          <span> {{ item.count }} </span>
+          
+          <span v-if="item == activeItem">
+            + <input type="number" v-model="addCount" 
+            @keyup.enter="addNewCount(item)"
+            @keyup.esc="cancelNewCount(item)">
+          </span>
         </td>
         <td>
           <div class="my-row">
             <div class="my-block triangle_up" @click="increment(item)"></div>
             <div class="my-block triangle_down" @click="decrement(item)"></div>
-            <button type="button" class="btn btn-outline-success"
-            v-if="item != activeItem"
-            class="my-block" @click="setActive(item)">Active</button>
           </td>  
         </tr>
       </tbody>
@@ -151,20 +146,25 @@
             this.activeItem = item;
             console.log(item.type + ' is active.');
           },
-          addCountToActive: function () {
+          addNewCount: function (item) {
             var num = Number(this.addCount);
-            this.addCount = 0;
             
             if (Number.isNaN(num)) {
               console.log('Error: Input is not a valid number.')
-            } else if (num < 0) {
-              console.log('Error: Negative value is not accepted.')
+            } else if (item.count + num < 0) {
+              console.log('Error: Negative count is not accepted.')
             } else {
-              var item = this.activeItem;
               item.count += num;
               console.log(item.type + ' increased by ' + num + ' (now ' 
               + item.count + ').');
             }
+            
+            this.addCount = 0;
+            this.activeItem = null;
+          },
+          cancelNewCount: function (item) {
+            this.addCount = 0;
+            this.activeItem = null;
           }
         }
       })
