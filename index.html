@@ -8,7 +8,7 @@
   <title>危安物品清點</title>
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet"href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous">
   <link rel="stylesheet" href="./my-css-elements.css">
 </head>
@@ -35,17 +35,22 @@
             <span v-if="item == activeItem" style="font-weight: bold"> {{ item.type }} </span>
           </td>
           <td>
-            <span> {{ item.count }} </span>
-
-            <span v-if="item == activeItem">
-              +
-              <input type="number" v-model="addCount" @keyup.enter="addNewCount(item)" @keyup.esc="cancelNewCount(item)">
-            </span>
+            <div v-if="item != activeItem">
+              {{ item.count }}
+            </div>
+            <div v-if="item == activeItem">
+              {{ item.count }} +
+              <input type="number" v-model="addCount" v-focus="item == activeItem" @keyup.enter="addNewValue(item)" @keyup.esc="cancelNewValue(item)">
+              <span v-if="!checkCountAddValue">
+                = {{ newCount }}
+              </span>
+              {{ checkCountAddValue }}
           </td>
           <td>
             <div class="my-row">
               <div class="my-block triangle_up" @click="increment(item)"></div>
               <div class="my-block triangle_down" @click="decrement(item)"></div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -110,6 +115,21 @@
               function (total, item) {
                 return total + item.count;
               }, 0);
+          },
+          newCount: function () {
+            return Number(this.activeItem.count) + Number(this.addCount);
+          },
+          checkCountAddValue: function () {
+            var count = Number(this.activeItem.count);
+            var num = Number(this.addCount);
+
+            // check if the input number is a positive integer
+            // or the group's count become negative
+            if (!Number.isInteger(num)) {
+              return 'Input is not an integer.'
+            } else if (count + num < 0) {
+              return 'Negative count is not accepted.'
+            }
           }
         },
 
@@ -142,10 +162,10 @@
             this.activeItem = item;
             console.log(item.type + ' is active.');
           },
-          addNewCount: function (item) {
+          addNewValue: function (item) {
             var num = Number(this.addCount);
 
-            // check if the input number is a positive integer 
+            // check if the input number is a positive integer
             // or the group's count become negative
             if (!Number.isInteger(num)) {
               console.log('Error: Input is not an integer.')
@@ -161,14 +181,24 @@
             this.addCount = 0;
             this.activeItem = null;
           },
-          cancelNewCount: function (item) {
+          cancelNewValue: function (item) {
             this.addCount = 0;
             this.activeItem = null;
+          }
+        },
+
+        directives: {
+          'focus': {
+            inserted: function (el, binding) {
+              if (binding.value) {
+                el.focus()
+              }
+            }
           }
         }
       })
 
-      // initialize data in first start  
+      // initialize data in first start
       function dataSetup() {
         if (!app.items.length) {
           app.items = [{
