@@ -8,18 +8,15 @@
   <title>危安物品清點</title>
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+  <link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous">
   <link rel="stylesheet" href="./my-css-elements.css">
 </head>
 
 <body>
-  <!-- Vue.js -->
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-  <!-- template -->
-  <div class="container" id="dgc-app">
-
+  <div class="dgc-app container">
     <table class="table table-hover">
       <thead class="thead-dark">
         <tr>
@@ -28,10 +25,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items" :key="item.id" v-bind:class="{ 'table-success': item == activeItem }" @click="setActive(item)">
+        <tr v-for="item in items"
+          :key="item.id":class="{ 'table-success': item == activeItem }"
+          @click="setActive(item)">">
           <td>
             <span v-if="item != activeItem"> {{ item.type }} </span>
-            <span v-if="item == activeItem" style="font-weight: bold"> {{ item.type }} </span>
+            <span v-if="item == activeItem" style="font-weight: bold">
+              {{ item.type }}
+            </span>
           </td>
           <td>
             <div v-if="item != activeItem">
@@ -39,11 +40,12 @@
             </div>
             <div v-if="item == activeItem">
               {{ item.count }} +
-              <input type="number" v-model="addCount" v-focus="item == activeItem" @keyup.enter="addNewValue(item)" @keyup.esc="cancelNewValue(item)">
-              <span v-if="!checkCountAddValue">
-                = {{ newCount }}
-              </span>
-              {{ checkCountAddValue }}
+              <input v-model.number="addByValue"
+                v-focus="item == activeItem"
+                @keyup.enter="addInputValue(item)"
+                @keyup.esc="cancelInputValue(item)">
+              = {{ newCount }} {{ newCountIssue }}
+            </div>
           </td>
         </tr>
       </tbody>
@@ -55,208 +57,13 @@
       </thead>
     </table>
     <div class="float-right">
-      <button type="button" class="btn btn-primary" @click="reset()">Reset</button>
+      <button type="button" class="btn btn-primary"
+        @click="reset()">Reset</button>
     </div>
-    </div>
+  </div>
 
-    <script>
-      // localStorage
-      var STORAGE_KEY = 'dgcount-vuejs';
-
-      var itemStorage = {
-        fetch: function () {
-          var items = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-          items.forEach(function (item, index) {
-            item.id = index
-          })
-          itemStorage.uid = items.length
-          return items
-        },
-        save: function (items) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-        }
-      };
-
-      // app Vue instance
-      var app = new Vue({
-        // app initial state
-        data: {
-          items: itemStorage.fetch(),
-          addCount: 0,
-          activeItem: null
-        },
-
-        // watch items change for localStorage persistence
-        watch: {
-          items: {
-            handler: function (items) {
-              itemStorage.save(items)
-            },
-            deep: true
-          }
-        },
-
-        // computed properties
-        // http://vuejs.org/guide/computed.html
-        computed: {
-          total: function () {
-            return this.items.reduce(
-              function (total, item) {
-                return total + item.count;
-              }, 0);
-          },
-          newCount: function () {
-            return Number(this.activeItem.count) + Number(this.addCount);
-          },
-          checkCountAddValue: function () {
-            var count = Number(this.activeItem.count);
-            var num = Number(this.addCount);
-
-            // check if the input number is a positive integer
-            // or the group's count become negative
-            if (!Number.isInteger(num)) {
-              return 'Input is not an integer.'
-            } else if (count + num < 0) {
-              return 'Negative count is not accepted.'
-            }
-          }
-        },
-
-        filters: {},
-
-        // methods that implement data logic.
-        // note there's no DOM manipulation here at all.
-        methods: {
-          reset: function () {
-            this.items.forEach(function (item) {
-              item.count = 0;
-            })
-            console.log('Reset all categories to zero.');
-          },
-          increment: function (item) {
-            item.count += 1;
-            console.log(item.type + ' increased by one (now ' +
-              item.count + ').');
-          },
-          decrement: function (item) {
-            if (item.count <= 0) {
-              console.log('Error: item is empty. Ignore decrement.')
-            } else {
-              item.count -= 1;
-              console.log(item.type + ' decreased by one (now ' +
-                item.count + ').');
-            }
-          },
-          setActive: function (item) {
-            this.activeItem = item;
-            console.log(item.type + ' is active.');
-          },
-          addNewValue: function (item) {
-            var num = Number(this.addCount);
-
-            // check if the input number is a positive integer
-            // or the group's count become negative
-            if (!Number.isInteger(num)) {
-              console.log('Error: Input is not an integer.')
-            } else if (item.count + num < 0) {
-              console.log('Error: Negative count is not accepted.')
-            } else if (num !== 0) {
-              item.count += num;
-              console.log(item.type + ' increased by ' + num + ' (now ' +
-                item.count + ').');
-            }
-
-            // reset
-            this.addCount = 0;
-            this.activeItem = null;
-          },
-          cancelNewValue: function (item) {
-            this.addCount = 0;
-            this.activeItem = null;
-          }
-        },
-
-        directives: {
-          'focus': {
-            inserted: function (el, binding) {
-              if (binding.value) {
-                el.focus()
-              }
-            }
-          }
-        }
-      })
-
-      // initialize data in first start
-      function dataSetup() {
-        if (!app.items.length) {
-          app.items = [{
-              id: 1,
-              type: '刀剪',
-              count: 0
-            },
-            {
-              id: 2,
-              type: '腳架',
-              count: 0
-            },
-            {
-              id: 3,
-              type: '棍棒',
-              count: 0
-            },
-            {
-              id: 4,
-              type: '工具',
-              count: 0
-            },
-            {
-              id: 5,
-              type: '打火機',
-              count: 0
-            },
-            {
-              id: 6,
-              type: '鉛酸電池',
-              count: 0
-            },
-            {
-              id: 7,
-              type: '槍刀玩具',
-              count: 0
-            },
-            {
-              id: 8,
-              type: '噴罐',
-              count: 0
-            },
-            {
-              id: 9,
-              type: '防狼噴霧',
-              count: 0
-            },
-            {
-              id: 10,
-              type: '煙火',
-              count: 0
-            },
-            {
-              id: 11,
-              type: '易燃液體',
-              count: 0
-            },
-            {
-              id: 12,
-              type: '腐蝕液體',
-              count: 0
-            }
-          ];
-          console.log('First running. Initialize data.')
-        }
-      }
-
-      dataSetup()
-      app.$mount('#dgc-app')
-    </script>
-
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/first_run.js"></script>
 </body>
