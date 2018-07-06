@@ -19,17 +19,18 @@ All confiscated items (dangerous or hazardous) are categorized into 12 groups:
 ## Implemented
 * Counting
   * Add new value to a group's count by clicking on the group
-  * Increment/Decrement the count of a group
   * Reset all counts
+  * ~~Increment/Decrement a group's count~~
 * Summary
-  * Total of all counts
+  * Calculate the sum of all counts
 * Save/Load
   * All counts are saved into HTML5 local storage
 * UI
   * Now using BootStrap CSS
+* Organized JS scripts
 
-## Planning 
+## Planning
 
 * Tabs to switch between Terminals 1 and 2
-* File organization (separate HTML, CSS, and JS)
+* Load/Save counts from/to file
 * Better UI
