@@ -52,14 +52,16 @@
       <thead class="thead-light">
         <tr>
           <th>Total:</th>
-          <th>{{ total }}</th>
+          <th>
+            {{ total }}
+            <div class="float-right">
+              <button type="button" class="btn btn-primary"
+                @click="reset()">Reset</button>
+            </div>
+          </th>
         </tr>
       </thead>
     </table>
-    <div class="float-right">
-      <button type="button" class="btn btn-primary"
-        @click="reset()">Reset</button>
-    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
