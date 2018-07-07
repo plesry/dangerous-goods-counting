@@ -9,7 +9,7 @@
     // app initial state
     data: {
       items: itemStorage.fetch(),
-      addByValue: 0,
+      addByValue: '',
       activeItem: null
     },
 
@@ -52,17 +52,23 @@
     // methods that implement data logic.
     // note there's no DOM manipulation here at all.
     methods: {
-      reset: function () {
-        this.items.forEach(function (item) {
-          item.count = 0;
-        })
-        console.log('Reset all categories to zero.');
+      resetAllCounts: function () {
+        if (confirm('Reset all counts to zero?')) {
+          this.items.forEach(function (item) {
+            item.count = 0;
+          })
+          console.log('All types are reset to zero.');
+        }
       },
       setActive: function (item) {
         this.activeItem = item;
         console.log(item.type + ' is active.');
       },
-      addInputValue: function (item) {
+      clearInput: function (item) {
+        this.addByValue = '';
+        this.activeItem = null;
+      },
+      commitInput: function (item) {
         var num = Number(this.addByValue);
 
         if (num !== 0 && this.newCountIssue === "") {
@@ -71,12 +77,7 @@
             item.count + ').');
         }
 
-        this.addByValue = 0;
-        this.activeItem = null;
-      },
-      cancelInputValue: function (item) {
-        this.addByValue = 0;
-        this.activeItem = null;
+        this.clearInput(item);
       }
     },
 

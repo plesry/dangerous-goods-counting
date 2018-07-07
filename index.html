@@ -42,8 +42,8 @@
               {{ item.count }} +
               <input v-model.number="addByValue"
                 v-focus="item == activeItem"
-                @keyup.enter="addInputValue(item)"
-                @keyup.esc="cancelInputValue(item)">
+                @keyup.enter="commitInput(item)"
+                @keyup.esc="clearInput(item)">
               = {{ newCount }} {{ newCountIssue }}
             </div>
           </td>
@@ -56,7 +56,7 @@
             {{ total }}
             <div class="float-right">
               <button type="button" class="btn btn-primary"
-                @click="reset()">Reset</button>
+                @click="resetAllCounts()">Reset</button>
             </div>
           </th>
         </tr>
