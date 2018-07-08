@@ -9,14 +9,28 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous">
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+  crossorigin="anonymous">
   <link rel="stylesheet" href="./my-css-elements.css">
 </head>
 
 <body>
   <div class="dgc-app container">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-primary"
+      :class="{ disabled: currentHistoryId === 0}"
+      @click="undo()">Undo</button>
+      <button type="button" class="btn btn-primary"
+      :class="{ disabled: currentHistoryId === editHistory.length }"
+      @click="redo()">Redo</button>
+    </div>
+
+    <div class="float-right">
+      <button type="button" class="btn btn-danger"
+      @click="resetAllCounts()">RESET</button>
+    </div>
+
     <table class="table table-hover">
       <thead class="thead-dark">
         <tr>
@@ -26,46 +40,42 @@
       </thead>
       <tbody>
         <tr v-for="item in items"
-          :key="item.id":class="{ 'table-success': item == activeItem }"
-          @click="setActive(item)">
-          <td>
-            <span v-if="item != activeItem"> {{ item.type }} </span>
-            <span v-if="item == activeItem" style="font-weight: bold">
-              {{ item.type }}
-            </span>
-          </td>
-          <td>
-            <div v-if="item != activeItem">
-              {{ item.count }}
-            </div>
-            <div v-if="item == activeItem">
-              {{ item.count }} +
-              <input v-model.number="addByValue"
-                v-focus="item == activeItem"
-                @keyup.enter="commitInput(item)"
-                @keyup.esc="clearInput(item)">
-              = {{ newCount }} {{ newCountIssue }}
-            </div>
-          </td>
-        </tr>
-      </tbody>
-      <thead class="thead-light">
-        <tr>
-          <th>Total:</th>
-          <th>
-            {{ total }}
-            <div class="float-right">
-              <button type="button" class="btn btn-primary"
-                @click="resetAllCounts()">Reset</button>
-            </div>
-          </th>
-        </tr>
-      </thead>
-    </table>
-  </div>
+        :key="item.id":class="{ 'table-success': item == activeItem }"
+        @click="setActive(item)">
+        <td>
+          <span v-if="item != activeItem"> {{ item.type }} </span>
+          <span v-if="item == activeItem" style="font-weight: bold">
+            {{ item.type }}
+          </span>
+        </td>
+        <td>
+          <div v-if="item != activeItem">
+            {{ item.count }}
+          </div>
+          <div v-if="item == activeItem">
+            {{ item.count }} +
+            <input v-model.number="addByValue"
+            v-focus="item == activeItem"
+            @keyup.enter="commitInput(item)"
+            @keyup.esc="clearInput(item)">
+            = {{ newCount }} {{ newCountIssue }}
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <thead class="thead-light">
+      <tr>
+        <th>Total:</th>
+        <th>
+          {{ total }}
+        </th>
+      </tr>
+    </thead>
+  </table>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="js/store.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/first_run.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+<script src="js/first_run.js"></script>
 </body>

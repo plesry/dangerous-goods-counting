@@ -13,18 +13,21 @@ Make sure your web browser accepts 3rd-party data/cookies.
 ## Features
 * A table that shows all counts of 12 pre-defined groups
   * The sum of all counts is calculated automatically
-* **Click-and-edit** a group. An input area will show and you can add a value to its count. Beware:
+* **Click-and-edit** a group. An input area will show and you can add a value
+  to its count. Beware:
   * Input should be a valid integer
   * New count (count + input) should be non-negative
-* A button to **reset all counts**
+* **RESET** button
   * No more data-loss accident! A window will pop-up and ask you to confirm
+* Undo/Redo buttons
+  * Note that the app does not save history; it will be reset after
+    reloading/reopening the page or pressing 'Reset' button
 * All counts are saved into HTML5 local storage
   * Results are kept intact even if you refresh or exit the page
 * UI: now use Bootstrap
 
 ## Planning TODOs
 
-* Undo/Redo operations
 * Tabs to switch between different profiles (Terminals 1 and 2)
 * Load/Save counts from/to file
 

@@ -10,7 +10,9 @@
     data: {
       items: itemStorage.fetch(),
       addByValue: '',
-      activeItem: null
+      activeItem: null,
+      editHistory: [],
+      currentHistoryId: 0
     },
 
     // watch items change for localStorage persistence
@@ -53,16 +55,16 @@
     // note there's no DOM manipulation here at all.
     methods: {
       resetAllCounts: function () {
-        if (confirm('Reset all counts to zero?')) {
+        if (confirm("Reset all counts to zero? This operation can't be undone.")) {
           this.items.forEach(function (item) {
             item.count = 0;
           })
-          console.log('All types are reset to zero.');
+          this.editHistory.length = 0;  // clear array
+          this.currentHistoryId = 0;
         }
       },
       setActive: function (item) {
         this.activeItem = item;
-        console.log(item.type + ' is active.');
       },
       clearInput: function (item) {
         this.addByValue = '';
@@ -73,11 +75,34 @@
 
         if (num !== 0 && this.newCountIssue === "") {
           item.count += num;
-          console.log(item.type + ' increased by ' + num + ' (now ' +
-            item.count + ').');
+
+          this.editHistory.length = this.currentHistoryId;
+          this.editHistory.push(
+            { id: item.id, difference: num });
+            this.currentHistoryId++;
         }
 
         this.clearInput(item);
+      },
+      undo: function () {
+        if (this.currentHistoryId === 0) {
+          return;
+        }
+
+        var history = this.editHistory[this.currentHistoryId - 1];
+        var item = this.items[history.id - 1];
+        item.count -= history.difference;
+        this.currentHistoryId--;
+      },
+      redo: function () {
+        if (this.currentHistoryId === this.editHistory.length) {
+          return;
+        }
+
+        this.currentHistoryId++;
+        var history = this.editHistory[this.currentHistoryId - 1];
+        var item = this.items[history.id - 1];
+        item.count += history.difference;
       }
     },
 
