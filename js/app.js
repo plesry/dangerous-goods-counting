@@ -12,7 +12,7 @@
       addByValue: '',
       activeItem: null,
       editHistory: [],
-      currentHistoryId: 0
+      historyId: 0
     },
 
     // watch items change for localStorage persistence
@@ -60,7 +60,7 @@
             item.count = 0;
           })
           this.editHistory.length = 0;  // clear array
-          this.currentHistoryId = 0;
+          this.historyId = 0;
         }
       },
       setActive: function (item) {
@@ -76,33 +76,37 @@
         if (num !== 0 && this.newCountIssue === "") {
           item.count += num;
 
-          this.editHistory.length = this.currentHistoryId;
+          this.editHistory.length = this.historyId;
           this.editHistory.push(
-            { id: item.id, difference: num });
-            this.currentHistoryId++;
+            {
+              itemId: item.id,
+              difference: num
+            });
+            this.historyId++;
         }
 
         this.clearInput(item);
       },
+      getItemIndex: function (queryItemId) {
+        return queryItemId - 1;   // item id starts from 1
+      },
       undo: function () {
-        if (this.currentHistoryId === 0) {
+        if (this.historyId === 0) {
           return;
         }
 
-        var history = this.editHistory[this.currentHistoryId - 1];
-        var item = this.items[history.id - 1];
-        item.count -= history.difference;
-        this.currentHistoryId--;
+        var history = this.editHistory[this.historyId - 1];
+        this.items[ this.getItemIndex(history.itemId) ].count -= history.difference;
+        this.historyId--;
       },
       redo: function () {
-        if (this.currentHistoryId === this.editHistory.length) {
+        if (this.historyId === this.editHistory.length) {
           return;
         }
 
-        this.currentHistoryId++;
-        var history = this.editHistory[this.currentHistoryId - 1];
-        var item = this.items[history.id - 1];
-        item.count += history.difference;
+        this.historyId++;
+        var history = this.editHistory[this.historyId - 1];
+        this.items[ this.getItemIndex(history.itemId) ].count += history.difference;
       }
     },
 
