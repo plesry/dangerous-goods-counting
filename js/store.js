@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var STORAGE_KEY = 'dgc-app-vuejs';
+  var STORAGE_KEY = 'dgc-app-items';
 
   exports.itemStorage = {
     fetch: function () {
